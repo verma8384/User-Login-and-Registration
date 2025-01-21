@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar shadow" style="height: 100vh;">
+            <h5 class="text-center p-3"><b>Menu</b></h5>
+            <a href="dashboard.html" class="mb-2">DashBoard</a>
+            <a href="index.html" class="mb-2"><b>Employee</b></a>
+            <a href="change_password.html" class="mb-2">Password</a>
+            <a href="users.html" class="mb-2">Users</a>
+            <a href="product.html" class="mb-2">Products</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Header -->
+            <header class="header p-3 d-flex justify-content-between align-items-center shadow">
+                <h3 class="m-0">Employee Data Form</h3>
+                <button id="logoutButton" class="btn btn-sm btn-danger btn-logout" data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">Logout</button>
+            </header>
+
+            <div id="session-expired-message" style="display: none; color: red; font-weight: bold;">
+                Your session has expired. Please log in again.
+            </div>
+
+            <!-- Content -->
+            <div class="p-4">
+                <div class="col-lg-11 my-4">
+                    <h2 id="formTitle" class="text-center mb-4"></h2>
+                    <form id="dataForm" class="p-4 border rounded row g-10">
+                        <div id="text-right" class="text-right col-12" style="text-align: right;">
+                            <button type="button" class="btn btn-outline-danger w-15"
+                                onclick="redirectToTable()">X</button>
+                        </div><br>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            <small id="validUser" class="form-text invalid-feedback">
+                                Your Name must be characters and should not have a number
+                            </small>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="empid" class="form-label">Employee ID</label>
+                            <input type="number" class="form-control" id="empid" name="empid" required>
+                            <small id="validid" class="form-text invalid-feedback">
+                                Your Employee ID must be unique and a number
+                            </small>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <small id="emailvalid" class="form-text invalid-feedback">
+                                Your email must be a valid email
+                            </small>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select id="gender" name="gender" class="form-select form-control" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="number" class="form-control" id="phone" name="phone" required>
+                            <small id="validPhone" class="form-text invalid-feedback">
+                                Your phone number must be 10 digit long
+                            </small>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="image" class="form-label photo-upload">Image</label>
+                            <input type="file" id="image" name="image" class="form-control" aria-label="image"
+                                accept="image/*" onchange="PreviewImage();">
+                            <small id="validImage" class="form-text invalid-feedback">
+                                Please Select an Image
+                            </small>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea id="address" name="address" class="form-control" required></textarea>
+                            <small id="validadd" class="form-text invalid-feedback">
+                                Enter a valid address
+                            </small>
+                        </div>
+                        <div id="preview" class="col-lg-2 float-left-child"
+                            style="width: 100px; height: 100px; margin-top: 10px; display: none;">
+                            <img class="" id="uploadPreview" style="width: 100px; height: 100px;" />
+                            <span id="btn" onclick="removeImage()">x</span>
+                        </div>
+                        <div id="gap" class="col-lg-2" style="display: block;"></div>
+                        <div class="col-lg-4"></div>
+                        <div class="d-flex" style="margin-top: 15px;">
+                            <button type="submit" id="formSubmitBtn" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-outline-danger"
+                                onclick="redirectToTable()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Expired Modal -->
+    <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sessionModalLabel">Session Expired</h5>
+                </div>
+                <div class="modal-body">
+                    Your session has expired. login Again!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="goToLogin">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const employees = JSON.parse(localStorage.getItem("users"))
+
+            // Function to check if the user email exists in the employees array
+            const isUserValid = (userEmail) => {
+                return employees.some(employee => employee.email === userEmail);
+            };
+
+            // Check for user session
+            if (!sessionStorage.getItem("user") || !localStorage.getItem("user") || !isUserValid(localStorage.getItem("user")) || !(sessionStorage.getItem("user") === localStorage.getItem("user"))) {
+                sessionStorage.removeItem("user");
+                localStorage.removeItem("user");
+                // Show modal if no user session
+                const sessionModal = new bootstrap.Modal(document.getElementById('sessionModal'), {
+                    backdrop: 'static', // Prevent closing the modal by clicking outside
+                    keyboard: false    // Prevent closing the modal using the keyboard
+                });
+                sessionModal.show();
+
+                // Redirect to login page after the modal is closed
+                document.getElementById('goToLogin').addEventListener('click', function () {
+                    window.location.href = "login.html";
+                });
+            } else {
+                // Logout confirmation
+                document.getElementById('confirmLogout').addEventListener('click', function () {
+                    sessionStorage.removeItem("user");
+                    localStorage.removeItem("user");
+                    window.location.href = "login.html"; // Redirect to the login page
+                });
+
+                // Redirect to the form page
+                function redirectToForm() {
+                    window.location.href = "form.html?action=add";
+                }
+
+                function redirectToTable() {
+                    window.location.href = "index.html";
+                }
+
+                function redirectToLogin() {
+                    window.location.href = "login.html";
+                }
+
+                // Redirect to edit a specific row
+                function editRow(key) {
+                    window.location.href = `form.html?action=edit&id=${key}`;
+                }
+                const urlParams = new URLSearchParams(window.location.search);
+                const action = urlParams.get('action');
+                const id = urlParams.get('id');
+
+                const form = document.getElementById('dataForm');
+                const formTitle = document.getElementById('formTitle');
+
+
+                if (action === 'edit' && id) {
+                    formTitle.textContent = 'Edit Employee Details';
+                    const formSubmitBtn = document.getElementById('formSubmitBtn');
+                    formSubmitBtn.textContent = 'Save';
+                    formSubmitBtn.disabled = false;
+                    const data = JSON.parse(localStorage.getItem(id));
+                    if (data) {
+                        document.getElementById('name').value = data.Name;
+                        document.getElementById('empid').value = data["Employee-ID"];
+                        document.getElementById('email').value = data["E-mail"];
+                        document.getElementById('gender').value = data.Gender;
+                        document.getElementById('phone').value = data.Phone;
+                        document.getElementById('address').value = data.Address;
+                        document.getElementById('empid').readOnly = true;
+                        imageUrl = data.Image;
+                    }
+                } else {
+                    formTitle.textContent = 'Add Employee Details';
+                    formSubmitBtn.textContent = 'Submit';
+                }
+
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    // Run validations
+                    const nameField = document.getElementById('name');
+                    const emailField = document.getElementById('email');
+                    const phoneField = document.getElementById('phone');
+                    const addressField = document.getElementById('address');
+                    const empidField = document.getElementById('empid');
+
+                    // Initialize validation flags
+                    let isValidForm = true;
+
+                    if (!/^[a-zA-Z]+\s[a-zA-Z]+$|^[a-zA-Z]+$/.test(nameField.value)) {
+                        nameField.classList.add('is-invalid');
+                        isValidForm = false;
+                        alert("Enter Name Correctly")
+                    } else {
+                        nameField.classList.remove('is-invalid');
+                    }
+
+                    if (!/^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/.test(emailField.value)) {
+                        emailField.classList.add('is-invalid');
+                        isValidForm = false;
+                        alert("Enter E-mail Correctly")
+                    } else {
+                        emailField.classList.remove('is-invalid');
+                    }
+
+                    if (!/^([0-9]{10})$|^0([0-9]{10})$/.test(phoneField.value)) {
+                        phoneField.classList.add('is-invalid');
+                        isValidForm = false;
+                        alert("Enter Phone Correctly")
+                    } else {
+                        phoneField.classList.remove('is-invalid');
+                    }
+
+                    if (!/.....\w...../.test(addressField.value)) {
+                        addressField.classList.add('is-invalid');
+                        isValidForm = false;
+                        alert("Enter Address Correctly")
+                    } else {
+                        addressField.classList.remove('is-invalid');
+                    }
+
+                    if (!/^\d+$/.test(empidField.value)) {
+                        empidField.classList.add('is-invalid');
+                        isValidForm = false;
+                        alert("Enter Employee-ID Correctly")
+                    } else {
+                        empidField.classList.remove('is-invalid');
+                    }
+
+                    if (action !== 'edit') {
+                        const allKeys = Object.keys(localStorage);
+                        for (const key of allKeys) {
+                            const storedData = localStorage.getItem(key);
+                            if (storedData) {
+                                try {
+                                    const parsedData = JSON.parse(storedData);
+                                    // Use parsedData here
+                                } catch (e) {
+                                    console.error("Error parsing JSON from localStorage", e);
+                                }
+                            }
+                            else if (storedData && storedData["Employee-ID"] === empidField.value) {
+                                empidField.classList.add('is-invalid');
+                                isValidForm = false;
+                                // alert("Employee-ID must be unique. Please enter a different ID.");
+                                break;
+                            }
+                        }
+                    }
+
+                    // Stop form submission if validation fails
+                    if (!isValidForm) {
+                        console.log('Form validation failed. Fix errors and try again.');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    const imageFile = document.getElementById('image').files[0];
+
+
+                    let existingImage = "";
+                    if (action === 'edit' && id) {
+                        const existingData = JSON.parse(localStorage.getItem(id));
+                        if (existingData && existingData.Image) {
+                            existingImage = existingData.Image;
+                        }
+                    }
+
+                    reader.onload = function () {
+                        const entry = {
+                            Name: nameField.value,
+                            "Employee-ID": empidField.value,
+                            "E-mail": emailField.value,
+                            Gender: document.getElementById('gender').value,
+                            Phone: phoneField.value,
+                            Address: addressField.value,
+                            Image: imageFile ? reader.result : existingImage // Use existingImage if no new file
+                        };
+
+                        if (action === 'edit' && id) {
+                            localStorage.setItem(id, JSON.stringify(entry));
+                        } else {
+                            const newId = Date.now();
+                            localStorage.setItem(newId, JSON.stringify(entry));
+                        }
+
+                        redirectToTable();
+                    };
+                    if (imageFile) {
+                        reader.readAsDataURL(imageFile);
+
+                    } else {
+                        reader.onload(); // Trigger manually if no new image is uploaded
+                    }
+                });
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const name = document.getElementById('name');
+                    const email = document.getElementById('email');
+                    const phone = document.getElementById('phone');
+                    const address = document.getElementById('address');
+                    const empid = document.getElementById('empid');
+                    const imageInput = document.getElementById('image');
+                    const submitButton = document.getElementById('formSubmitBtn');
+
+                    let validFields = {
+                        name: action === 'edit',
+                        email: action === 'edit',
+                        phone: action === 'edit',
+                        empid: action === 'edit',
+                        address: action === 'edit',
+                        image: action === 'edit',
+                    };
+
+                    function toggleSubmitButton() {
+                        submitButton.disabled = !Object.values(validFields).every(Boolean);
+                    }
+
+                    function validateField(field, regex, fieldName) {
+                        if (!field.value.trim()) {
+                            field.classList.remove('is-invalid');
+                            validFields[fieldName] = action === 'edit'; // Default valid in edit mode
+                            toggleSubmitButton();
+                            return;
+                        }
+
+                        if (regex.test(field.value.trim())) {
+                            field.classList.remove('is-invalid');
+                            validFields[fieldName] = true;
+                        } else {
+                            field.classList.add('is-invalid');
+                            validFields[fieldName] = false;
+                        }
+                        toggleSubmitButton();
+                    }
+
+                    // Set up real-time validation for inputs
+                    name.addEventListener('input', () => validateField(name, /^[a-zA-Z]+\s[a-zA-Z]+$|^[a-zA-Z]+$/, 'name'));
+                    email.addEventListener('input', () => validateField(email, /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/, 'email'));
+                    phone.addEventListener('input', () => validateField(phone, /^([1-9][0-9]{9})$|^0([1-9][0-9]{9})$/, 'phone'));
+                    address.addEventListener('input', () => validateField(address, /.....\w...../, 'address'));
+                    empid.addEventListener('input', () => validateField(empid, /^\d+$/, 'empid'));
+
+                    imageInput.addEventListener('change', () => {
+                        const file = imageInput.files[0];
+                        if (action === 'edit' && !file) {
+                            validFields.image = true; // Image is optional in edit mode
+                        } else if (file) {
+                            validFields.image = true;
+                            PreviewImage();
+                        } else {
+                            validFields.image = false;
+                            imageInput.classList.add('is-invalid');
+                        }
+                        toggleSubmitButton();
+                    });
+
+                    // Image preview
+                    function PreviewImage() {
+                        const gap = document.getElementById('gap');
+                        const preview = document.getElementById('preview');
+                        preview.style.display = "block";
+                        gap.style.display = "none";
+
+                        const fileReader = new FileReader();
+                        fileReader.readAsDataURL(document.getElementById("image").files[0]);
+
+                        fileReader.onload = function (event) {
+                            document.getElementById("uploadPreview").src = event.target.result;
+                        };
+                    }
+
+                    // Show existing image preview in edit mode
+                    if (action === 'edit' && id) {
+                        const existingData = JSON.parse(localStorage.getItem(id));
+                        if (existingData && existingData.Image) {
+                            const preview = document.getElementById('preview');
+                            const gap = document.getElementById('gap');
+                            preview.style.display = "block";
+                            gap.style.display = "none";
+                            document.getElementById("uploadPreview").src = existingData.Image;
+                        }
+                    }
+
+                    toggleSubmitButton();
+                });
+
+                function removeImage() {
+                    const gap = document.getElementById('gap')
+                    const preview = document.getElementById('preview')
+                    preview.style.display = "none";
+                    gap.style.display = "block";
+                    // Clear the file input
+                    document.getElementById("image").value = "";
+                    // Remove the previewed image
+                    document.getElementById("uploadPreview").src = "";
+                    if (action === 'add') {
+                        const formSubmitBtn = document.getElementById('formSubmitBtn');
+                        formSubmitBtn.disabled = true;
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="d-flex card col-4 justify-content-center shadow"
+            style="align-content: center; border-radius: 1rem;">
+            <h3 class="text-center mb-4 fw-bold" style="margin-top: 15px;">Login</h3>
+            <form id="loginForm" class="needs-validation" style="margin: 20px;" novalidate>
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                    <div class="invalid-feedback">Please enter a valid email.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password"
+                        required>
+                    <div class="invalid-feedback">Password is required.</div>
+                    <p class="small mb-2 pb-lg-2" style="text-align: right;"><a href="forgot_password.html">Forgot
+                            Password</a></p>
+                </div>
+                <div class="invalid-feedback" id="InvalidCred"
+                    style="display: none; text-align: center; color: red; margin-bottom: 10px;">
+                    Invalid Credentials
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <div class="mb-0 fw-bold" style="text-align: center; margin-top: 30px;">
+                    <small>Don't have an Account?<a href="registration.html">Sign Up</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        sessionStorage.clear();
+        const form = document.getElementById('loginForm');
+        const emailField = document.getElementById('loginEmail');
+        const passwordField = document.getElementById('loginPassword');
+        const invalidCred = document.getElementById('InvalidCred');
+    
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+    
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+    
+            // Hide the invalid credentials message on each submission
+            invalidCred.style.display = "none";
+    
+            // Perform normal validation
+            if (form.checkValidity()) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(user => user.email === email && user.password === password);
+    
+                if (user) {
+                    sessionStorage.setItem("user", user.email)
+                    localStorage.setItem("user", user.email)
+                    window.location.href = "dashboard.html"; // Redirect to dashboard
+                } else {
+                    // Display invalid credentials message without affecting input styles
+                    invalidCred.style.display = "block";
+    
+                    // Remove valid/invalid styles
+                    emailField.classList.remove('is-valid', 'is-invalid');
+                    passwordField.classList.remove('is-valid', 'is-invalid');
+                }
+            }
+    
+            form.classList.add('was-validated'); // Bootstrap validation activation
+        });
+    
+        // Clear invalid credentials message when user modifies the input fields
+        emailField.addEventListener('input', () => {
+            invalidCred.style.display = "none";
+        });
+    
+        passwordField.addEventListener('input', () => {
+            invalidCred.style.display = "none";
+        });
+    </script>
+    
+</body>
+
+</html>

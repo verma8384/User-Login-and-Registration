@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="d-flex card col-4 justify-content-center shadow"
+            style="align-content: center; border-radius: 1rem;">
+            <h3 class="text-center mb-4 fw-bold" style="margin-top: 15px;">Sign Up</h3>
+            <form id="registrationForm" class="needs-validation" style="margin: 20px;" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                    <div class="invalid-feedback">Name is required.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    <div class="invalid-feedback">Please enter a valid email.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Enter your phone number"
+                        pattern="^[0-9]{10}$|^0[0-9]{10}$" required>
+                    <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password"
+                        minlength="6" required>
+                    <div class="invalid-feedback">Password must contain: Uppercase, Lowercase, Digit, Special
+                        Character and must be of length 6 to 15.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password"
+                        required>
+                    <div class="invalid-feedback">Passwords must match.</div>
+                </div>
+                <button type="button" id="registerButton" class="btn btn-primary w-100" data-bs-toggle="modal"
+                    data-bs-target="#confirmModal">Sign Up</button>
+                <div class="mb-0 fw-bold" style="text-align: center; margin-top: 30px;">
+                    <small>Already have an Account?<a href="login.html">Log In</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirm Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to register with the provided details?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmRegister">Yes, Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="errorModalLabel">Registration Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    The email is already registered. Please use a different email or log in.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Reference form inputs
+        const form = document.getElementById('registrationForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        // Define the regular expressions
+        const nameRegex = /^[a-zA-Z]+\s[a-zA-Z]+$|^[a-zA-Z]+$/;
+        const emailRegex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+        const phoneRegex = /^([1-9][0-9]{9})$|^0([0-9]{10})$/;
+
+        // Validate inputs with real-time event listeners
+        nameInput.addEventListener('input', () => validateField(nameInput, nameRegex, "Name is invalid. Example: John or John Doe"));
+        emailInput.addEventListener('input', () => validateField(emailInput, emailRegex, "Invalid email format. Example: user@example.com"));
+        phoneInput.addEventListener('input', () => validateField(phoneInput, phoneRegex, "Invalid phone number. Enter 10 digits only."));
+
+        // Helper function to validate fields
+        function validateField(input, regex, errorMessage) {
+            const value = input.value.trim();
+            if (!regex.test(value)) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                input.nextElementSibling.textContent = errorMessage; // Update feedback message
+            } else {
+                input.classList.add('is-valid');
+                input.classList.remove('is-invalid');
+            }
+            updateButtonState(); // Update the Sign Up button state
+        }
+
+        // Password validation
+        passwordInput.addEventListener('input', () => {
+            const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,15}$/;
+
+            // Validate the password field
+            if (!regex.test(passwordInput.value)) {
+                passwordInput.classList.add('is-invalid');
+                passwordInput.classList.remove('is-valid');
+            } else {
+                passwordInput.classList.add('is-valid');
+                passwordInput.classList.remove('is-invalid');
+            }
+
+            if (confirmPasswordInput.value) {
+                validatePasswords();
+            }
+
+            updateButtonState(); // Update the Sign Up button state
+        });
+
+        // Confirm Password validation
+        confirmPasswordInput.addEventListener('input', () => validatePasswords());
+
+        function validatePasswords() {
+            if (confirmPasswordInput.value !== passwordInput.value || confirmPasswordInput.value === "") {
+                confirmPasswordInput.classList.add('is-invalid');
+                confirmPasswordInput.classList.remove('is-valid');
+            } else {
+                confirmPasswordInput.classList.add('is-valid');
+                confirmPasswordInput.classList.remove('is-invalid');
+            }
+            updateButtonState(); // Update the Sign Up button state
+        }
+
+        // Handle confirmation and registration
+        document.getElementById('confirmRegister').addEventListener('click', function () {
+            if (form.checkValidity()) {
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const phone = phoneInput.value.trim();
+                const password = passwordInput.value;
+
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                if (users.some(user => user.email === email)) {
+                    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                    errorModal.show(); // Show the error modal
+                } else {
+                    users.push({ name, email, phone, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    window.location.href = "login.html"; // Redirect to login
+                }
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+
+        // Reference the register button
+        const registerButton = document.getElementById('registerButton');
+
+        // Update button state
+        function updateButtonState() {
+            if (form.checkValidity() && passwordsMatch()) {
+                registerButton.disabled = false;
+            } else {
+                registerButton.disabled = true;
+            }
+        }
+
+        // Check if passwords match
+        function passwordsMatch() {
+            return passwordInput.value === confirmPasswordInput.value && confirmPasswordInput.value !== "";
+        }
+
+        // Attach `input` event listeners to all fields to update the button state
+        [nameInput, emailInput, phoneInput, passwordInput, confirmPasswordInput].forEach(input => {
+            input.addEventListener('input', updateButtonState);
+        });
+
+        // Initial button state
+        updateButtonState();
+    </script>
+
+</body>
+
+</html>
